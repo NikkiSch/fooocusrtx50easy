@@ -1116,6 +1116,9 @@ def dump_default_english_config():
 
 
 # dump_default_english_config()
+# geändert von Nikki:
+import os
+os.environ.setdefault('NO_PROXY', 'localhost,127.0.0.1')
 
 shared.gradio_root.launch(
     inbrowser=args_manager.args.in_browser,
