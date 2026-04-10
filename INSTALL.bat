@@ -18,12 +18,12 @@ if errorlevel 1 (
 )
 echo [OK] Python gefunden.
 
-:: In das Fooocus-Unterverzeichnis wechseln
+:: In Fooocus-Unterverzeichnis wechseln
 cd fooocus
 
 :: Virtuelle Umgebung erstellen
 if not exist "fooocus_env" (
-    echo [1/4] Erstelle virtuelle Umgebung...
+    echo [1/5] Erstelle virtuelle Umgebung...
     python -m venv fooocus_env
 )
 
@@ -33,42 +33,38 @@ call fooocus_env\Scripts\activate.bat
 :: pip updaten
 python -m pip install --upgrade pip --quiet
 
-:: CUDA-Version erkennen (robuste Methode)
-set CUDA_MAJOR=12
-set CUDA_MINOR=1
-for /f "tokens=*" %%a in ('nvidia-smi ^| findstr /C:"CUDA Version"') do (
-    for /f "tokens=9" %%v in ("%%a") do set FULL_VER=%%v
-)
-for /f "tokens=1 delims=." %%a in ("%FULL_VER%") do set CUDA_MAJOR=%%a
-for /f "tokens=2 delims=." %%b in ("%FULL_VER%") do set CUDA_MINOR=%%b
-echo [INFO] Erkannte CUDA-Version: %FULL_VER% (Major: %CUDA_MAJOR%, Minor: %CUDA_MINOR%)
+:: Vorhandene torch-Version entfernen
+echo [2/5] Entferne vorhandene PyTorch-Installation...
+pip uninstall torch torchvision torchaudio -y >nul 2>&1
 
-:: Torch je nach CUDA installieren
-echo [2/4] Installiere PyTorch mit GPU-Unterstuetzung...
-
-if %CUDA_MAJOR% EQU 12 (
-    if %CUDA_MINOR% GEQ 8 (
-        echo [INFO] Nutze PyTorch cu128 fuer RTX 50xx
-        pip install torch==2.7.0+cu128 torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu128 --quiet
-    ) else (
-        echo [INFO] Nutze PyTorch cu121 fuer RTX 30xx/40xx
-        pip install torch==2.1.0+cu121 torchvision==0.16.0 --extra-index-url https://download.pytorch.org/whl/cu121 --quiet
+:: GPU-Treiber-Version ermitteln
+set DRIVER_MAJOR=0
+for /f "skip=1 tokens=1" %%a in ('nvidia-smi --query-gpu^=driver_version --format^=csv 2^>nul') do (
+    if "%DRIVER_MAJOR%"=="0" (
+        for /f "tokens=1 delims=." %%v in ("%%a") do set DRIVER_MAJOR=%%v
     )
+)
+
+:: Torch je nach Treiber installieren
+echo [3/5] Installiere PyTorch mit GPU-Unterstuetzung...
+echo [INFO] Erkannter Treiber (Major): %DRIVER_MAJOR%
+
+set /a DRIVER_CHECK=%DRIVER_MAJOR%
+if %DRIVER_CHECK% GEQ 570 (
+    echo [INFO] RTX 50xx erkannt - nutze PyTorch cu128
+    pip install torch==2.7.0+cu128 torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu128 --quiet
 ) else (
-    echo [INFO] Nutze PyTorch cu121 als Standard
+    echo [INFO] RTX 30xx/40xx erkannt - nutze PyTorch cu121
     pip install torch==2.1.0+cu121 torchvision==0.16.0 --extra-index-url https://download.pytorch.org/whl/cu121 --quiet
 )
 
-:: Jinja2 Fix VOR requirements
-echo [3/4] Installiere Kernpakete...
-pip install "jinja2==3.1.2" --force-reinstall --quiet
-
-:: Restliche Abhaengigkeiten
-echo [4/4] Installiere weitere Pakete...
+:: Abhaengigkeiten installieren
+echo [4/5] Installiere weitere Pakete...
 pip install -r requirements_versions.txt --quiet
 
-:: Jinja2 nochmals sicherstellen
-pip install "jinja2==3.1.2" --force-reinstall --quiet
+:: Kritische Versionen nochmals sicherstellen
+echo [5/5] Pruefe kritische Pakete...
+pip install "jinja2==3.1.2" "markupsafe==2.1.5" "ffmpy==0.3.2" "starlette==0.27.0" "fastapi==0.99.0" --force-reinstall --quiet
 
 echo.
 echo *** Installation abgeschlossen! ***
