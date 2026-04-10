@@ -71,6 +71,9 @@ def ini_args():
     from args_manager import args
     return args
 
+# NO_PROXY Fix für Gradio localhost
+os.environ.setdefault('NO_PROXY', 'localhost,127.0.0.1')
+os.environ.setdefault('no_proxy', 'localhost,127.0.0.1')
 
 prepare_environment()
 build_launcher()
