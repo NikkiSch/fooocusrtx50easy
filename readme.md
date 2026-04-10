@@ -24,7 +24,7 @@ einem Fork von [lllyasviel/Fooocus](https://github.com/lllyasviel/Fooocus).
 
 ## ▶️ Starten
 
-Nach der Installation einfach **`run.bat`** doppelklicken.  
+Nach der Installation einfach **`start.bat`** doppelklicken.  
 Der Browser öffnet sich automatisch mit der Fooocus-Oberfläche.
 
 ## 🔧 Enthaltene Fixes (gegenüber dem Original)
@@ -75,7 +75,7 @@ a fork of [lllyasviel/Fooocus](https://github.com/lllyasviel/Fooocus).
 
 ## ▶️ Starting the App
 
-After installation, simply double-click **`run.bat`**.  
+After installation, simply double-click **`start.bat`**.  
 Your browser will open automatically with the Fooocus interface.
 
 ## 🔧 Fixes included (compared to the original)
