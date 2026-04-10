@@ -1,70 +1,77 @@
 @echo off
-cd /d %~dp0
-setlocal enabledelayedexpansion
+chcp 65001 >nul
+title Fooocus Installation
 
-:: ------------------------------------------------------------
-:: STEP 1 - Install pip
-echo 🔧 Step 1: Installing pip...
-
-python_embed\python.exe python_embed\get-pip.py
-
-if !errorlevel! neq 0 (
-    echo ❌ Pip installation failed!
-    pause
-    exit /b 1
-) else (
-    echo ✅ Pip installation successful.
-)
-
-:: ------------------------------------------------------------
-:: STEP 2 - Install PyTorch Nightly
-echo 🧠 Step 2: Installing PyTorch Nightly with CUDA 12.8...
-
-python_embed\python.exe -m pip install --upgrade pip
-
-python_embed\python.exe -m pip install --pre torch==2.8.0.dev20250324+cu128 torchvision==0.22.0.dev20250325+cu128 torchaudio==2.6.0.dev20250325+cu128 --index-url https://download.pytorch.org/whl/nightly/cu128
-
-if !errorlevel! neq 0 (
-    echo ❌ PyTorch Nightly installation failed.
-    pause
-    exit /b 1
-) else (
-    echo ✅ PyTorch Nightly installed.
-)
-
-:: ------------------------------------------------------------
-:: STEP 3 - Install packages from requirements_versions.txt
-echo 📦 Step 3: Installing additional dependencies from requirements_versions.txt...
-
-python_embed\python.exe -m pip install -r fooocus\requirements_versions.txt
-
-if !errorlevel! neq 0 (
-    echo ❌ Package installation failed.
-    pause
-    exit /b 1
-) else (
-    echo ✅ All additional packages installed.
-)
-
-:: ------------------------------------------------------------
-:: STEP 4 - Create run.bat
-echo 📝 Step 4: Creating run.bat...
-
-(
-echo @echo off
-echo title Launching Fooocus WebUI...
-echo cd /d %~dp0
 echo.
-echo REM Launch Fooocus using embedded Python
-echo python_embed\python.exe Fooocus\entry_with_update.py
-echo pause
-) > run.bat
+echo  ╔══════════════════════════════════════╗
+echo  ║    Fooocus – KI-Bildgenerator        ║
+echo  ║    Easy Installation                 ║
+echo  ╚══════════════════════════════════════╝
+echo.
 
-if exist run.bat (
-    echo ✅ run.bat created successfully!
-) else (
-    echo ❌ Failed to create run.bat
+:: Python prüfen
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo  [FEHLER] Python nicht gefunden!
+    echo  Bitte Python 3.10 von python.org installieren.
+    pause
+    exit /b 1
+)
+echo  [OK] Python gefunden.
+
+:: Virtuelle Umgebung erstellen
+if not exist "fooocus_env" (
+    echo  [1/4] Erstelle virtuelle Umgebung...
+    python -m venv fooocus_env
 )
 
-echo ✅ Setup complete. You can now double-click run.bat to start Fooocus!
+:: Umgebung aktivieren
+call fooocus_env\Scripts\activate.bat
+
+:: pip updaten
+python -m pip install --upgrade pip --quiet
+
+:: CUDA-Version erkennen
+set CUDA_VER=11
+for /f "skip=1 tokens=2 delims=," %%i in ('nvidia-smi --query-gpu=driver_version --format=csv 2^>nul') do (
+    set DRIVER=%%i
+)
+for /f "tokens=9" %%v in ('nvidia-smi ^| findstr /C:"CUDA Version"') do set CUDA_VER=%%v
+echo  [INFO] Erkannte CUDA-Version: %CUDA_VER%
+
+:: Torch je nach CUDA installieren
+echo  [2/4] Installiere PyTorch mit GPU-Unterstützung...
+set CUDA_MAJOR=%CUDA_VER:~0,2%
+set CUDA_MINOR=%CUDA_VER:~3,1%
+
+if "%CUDA_MAJOR%"=="12" (
+    if "%CUDA_MINOR%" GEQ "8" (
+        echo  [INFO] Nutze PyTorch cu128 fuer RTX 50xx
+        pip install torch==2.7.0+cu128 torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu128 --quiet
+    ) else (
+        echo  [INFO] Nutze PyTorch cu121 fuer RTX 30xx/40xx
+        pip install torch==2.1.0+cu121 torchvision==0.16.0 --extra-index-url https://download.pytorch.org/whl/cu121 --quiet
+    )
+) else (
+    echo  [INFO] Nutze PyTorch cu121 als Standard
+    pip install torch==2.1.0+cu121 torchvision==0.16.0 --extra-index-url https://download.pytorch.org/whl/cu121 --quiet
+)
+
+:: Jinja2 Fix VOR requirements installieren
+echo  [3/4] Installiere Kernpakete...
+pip install "jinja2==3.1.2" --force-reinstall --quiet
+
+:: Restliche Abhängigkeiten
+echo  [4/4] Installiere weitere Pakete...
+pip install -r requirements_versions.txt --quiet
+
+:: Jinja2 nochmals sicherstellen (requirements könnte es überschrieben haben)
+pip install "jinja2==3.1.2" --force-reinstall --quiet
+
+echo.
+echo  ╔══════════════════════════════════════╗
+echo  ║  Installation abgeschlossen!         ║
+echo  ║  Starte mit: START.bat               ║
+echo  ╚══════════════════════════════════════╝
+echo.
 pause
