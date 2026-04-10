@@ -1,127 +1,99 @@
-🌟 Great News for RTX 50-Series Users!
-This Fooocus pack works perfectly on RTX 50 GPUs — but try ComfyUI first! 😄🚀
+# 🎨 Fooocus – KI-Bildgenerator
 
-My favorite setup is here:
+Einfache Installation des KI-Bildgenerators Fooocus,
+optimiert für NVIDIA RTX 50xx (Blackwell), RTX 30xx und RTX 40xx.
 
-👉 https://github.com/alibakhtiari2/ComfyUI-With-Models
+Basiert auf [alibakhtiari2/fooocusrtx508090](https://github.com/alibakhtiari2/fooocusrtx508090),
+einem Fork von [lllyasviel/Fooocus](https://github.com/lllyasviel/Fooocus).
 
-A full ready-to-run ComfyUI pack with models included — no installation, no missing files, just unzip and create amazing images.
+## ✅ Voraussetzungen
 
-Make sure you have at least 12 GB VRAM.
-This package comes with various model like text to image - image to image - image to video.
-Also you can add or remove the models.
+- Windows 10 oder 11
+- NVIDIA-Grafikkarte (RTX 30xx, 40xx oder 50xx)
+- Aktuelle NVIDIA-Treiber
+- Internetverbindung (nur bei der ersten Installation)
 
----------------------------------------------------------------------------
+> Python und Git müssen **nicht** installiert werden.
 
-# ⚡ Fooocus RTX 50-Series Compatible (Portable Version)
+## 🚀 Installation (einmalig)
 
-## 🧠 Hassle-Free Setup for RTX 5080 / 5090 Users
+1. Oben rechts auf den grünen Button **„Code"** klicken
+2. **„Download ZIP"** wählen und speichern
+3. ZIP-Datei entpacken
+4. **`install.bat`** doppelklicken und warten (~10–20 Minuten)
 
-[Fooocus](https://github.com/lllyasviel/Fooocus) is one of the best Stable Diffusion UIs, but it's not directly compatible with **RTX 50-series GPUs** (like 5080 or 5090) due to **newer CUDA versions (12.8+)**.
+## ▶️ Starten
 
-This repository fixes that issue by bundling:
+Nach der Installation einfach **`run.bat`** doppelklicken.  
+Der Browser öffnet sich automatisch mit der Fooocus-Oberfläche.
 
-- ✅ A patched version of PyTorch that works with CUDA 12.8
-- ✅ All required dependencies
-- ✅ Embedded Python (no need to install Python globally)
-- ✅ Ready-to-run `.bat` launcher
+## 🔧 Enthaltene Fixes (gegenüber dem Original)
 
----
+| Problem | Lösung |
+|---|---|
+| `TypeError: unhashable type: dict` | Jinja2 auf Version 3.1.2 gepinnt |
+| `localhost not accessible` | NO_PROXY automatisch gesetzt |
+| RTX 50xx nicht erkannt | PyTorch cu128 für Blackwell-Architektur |
 
-## ✅ Features
+## 💡 Tipps
 
-- Fully self-contained and portable (no PATH changes)
-- Works out of the box on RTX 5080 / 5090 GPUs
-- Fast iteration speeds on modern GPUs
-- Supports additional model downloads
-- Offline and portable — perfect for air-gapped setups
+- Beim ersten Start werden Modelle heruntergeladen (~7 GB) – 
+  das dauert je nach Internetgeschwindigkeit einige Minuten
+- Erzeugte Bilder werden im Ordner `outputs/` gespeichert
+- Mit der Einstellung **„Image Prompt"** können eigene Bilder 
+  als Vorlage verwendet werden
 
----
+## 📄 Lizenz
 
-## 📥 Download Options
+Dieses Projekt folgt der Lizenz des Original-Repositories.  
+Alle Änderungen in diesem Fork sind gemeinfrei.
 
-### 🔹 Option 1: Download Full Pack (Recommended) default model included.
+ENGLISH:
+# 🎨 Fooocus – AI Image Generator
 
-📦 [Download from My Server](https://www.tartanak.com/alibakhtiari2/fooocusRTX50XX.rar)
+Easy installation of the Fooocus AI image generator,
+optimized for NVIDIA RTX 50xx (Blackwell), RTX 30xx and RTX 40xx.
 
+Based on [alibakhtiari2/fooocusrtx508090](https://github.com/alibakhtiari2/fooocusrtx508090),
+a fork of [lllyasviel/Fooocus](https://github.com/lllyasviel/Fooocus).
 
-Just extract and double-click `run.bat`. No installation needed. Default model is included.
-----------------------------------------------------------------------------------------------
+## ✅ Requirements
 
-### 🔹 Option 2: Download Full Pack (Recommended). model will be downloaded once running it.
+- Windows 10 or 11
+- NVIDIA graphics card (RTX 30xx, 40xx or 50xx)
+- Up-to-date NVIDIA drivers
+- Internet connection (first installation only)
 
-📦 [Download from My Server](https://www.tartanak.com/alibakhtiari2/fooocusrtx508090.rar)
+> Python and Git do **not** need to be installed.
 
+## 🚀 Installation (one time only)
 
-Just extract and double-click `install.bat`. No installation needed. But it will just download the model.
+1. Click the green **"Code"** button in the top right
+2. Select **"Download ZIP"** and save the file
+3. Extract the ZIP file
+4. Double-click **`install.bat`** and wait (~10–20 minutes)
 
-----------------------------------------------------------------------------------------------
-☕ Buy Me a Coffee
+## ▶️ Starting the App
 
-Enjoying Fooocus Online?
+After installation, simply double-click **`run.bat`**.  
+Your browser will open automatically with the Fooocus interface.
 
-If you want to support the hosting & development, you can donate here:
+## 🔧 Fixes included (compared to the original)
 
-[PayPal](https://www.paypal.com/paypalme/AliBakhtiari2)
+| Issue | Fix |
+|---|---|
+| `TypeError: unhashable type: dict` | Jinja2 pinned to version 3.1.2 |
+| `localhost not accessible` | NO_PROXY set automatically |
+| RTX 50xx not recognized | PyTorch cu128 for Blackwell architecture |
 
-Your support keeps this running ❤️
+## 💡 Tips
 
+- On first launch, models will be downloaded (~7 GB) –  
+  this may take a few minutes depending on your internet speed
+- Generated images are saved in the `outputs/` folder
+- Use the **"Image Prompt"** option to upload your own image as a reference
 
-### 🔹 Option 3: Clone & Install Locally
+## 📄 License
 
-```bash
-git clone https://github.com/alibakhtiari2/fooocusrtx508090.git
-cd fooocusrtx508090
-
-Then run:
-install.bat
-
-This will:
-Install pip into embedded Python
-Install PyTorch Nightly (with CUDA 12.8 support)
-Install all dependencies from requirements_versions.txt
-Generate run.bat to launch Fooocus
-
-⚠️ Note: Ignore yellow warnings like "pip not in PATH" — this uses embedded Python, and no global setup is required.
-
-🕒 Setup time: ~5–10 minutes depending on your connection.
-
-🖼️ Add or Upgrade Models
-To add custom models:
-Download .safetensors or .ckpt models from Civitai or Hugging Face
-
-Place them inside the following directory:
-Fooocus\models\checkpoints\
-You can now select them in the Fooocus UI after launching the app.
-
-🧪 Tested Hardware
-This version is tested and working on:
-
-✅ NVIDIA RTX 5080
-
-✅ NVIDIA RTX 5090
-
-High-speed performance and full compatibility confirmed.
-
-🚀 How to Launch
-After setup is complete, simply run:
-run.bat
-This launches the Fooocus Web UI using the embedded Python runtime and compatible CUDA build.
-
-🙏 Credits
-Original Project: Fooocus by lllyasviel
-
-Modified & Packaged by: Ali Bakhtiari alibakhtiari2@gmail.com
-
-⚖️ License & Use Notice
-This repo is provided for compatibility and educational purposes.
-
-Code is under MIT License (from Fooocus)
-
-Models and runtime builds are under their respective licenses:
-
-PyTorch: BSD-style license
-
-SDXL & derivatives: CreativeML Open RAIL-M license
-
-You are responsible for following licensing and usage rules when distributing or modifying models.
+This project follows the license of the original repository.  
+All changes in this fork are released to the public domain.
